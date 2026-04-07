@@ -24,19 +24,25 @@ def parse_sgf(path: str) -> dict:
 
     board_size = game.get_size()
 
+    def prop(key):
+        try:
+            return root.get(key) or ""
+        except KeyError:
+            return ""
+
     metadata = {
-        "player_white": root.get("PW") or "",
-        "player_black": root.get("PB") or "",
-        "white_rank": root.get("WR") or "",
-        "black_rank": root.get("BR") or "",
-        "result": root.get("RE") or "",
-        "komi": root.get("KM") or "",
-        "date": root.get("DT") or "",
-        "event": root.get("EV") or "",
-        "place": root.get("PC") or "",
-        "rules": root.get("RU") or "",
-        "time_limit": root.get("TM") or "",
-        "overtime": root.get("OT") or "",
+        "player_white": prop("PW"),
+        "player_black": prop("PB"),
+        "white_rank":   prop("WR"),
+        "black_rank":   prop("BR"),
+        "result":       prop("RE"),
+        "komi":         prop("KM"),
+        "date":         prop("DT"),
+        "event":        prop("EV"),
+        "place":        prop("PC"),
+        "rules":        prop("RU"),
+        "time_limit":   prop("TM"),
+        "overtime":     prop("OT"),
     }
 
     moves = []
@@ -76,13 +82,16 @@ def list_sgf_files(games_dir: str) -> list[dict]:
             data = path.read_bytes()
             game = sgf.Sgf_game.from_bytes(data)
             root = game.get_root()
+            def _p(k):
+                try: return root.get(k) or "?"
+                except KeyError: return "?"
             results.append({
                 "filename": path.name,
-                "player_white": root.get("PW") or "?",
-                "player_black": root.get("PB") or "?",
-                "result": root.get("RE") or "?",
-                "date": root.get("DT") or "?",
-                "board_size": game.get_size(),
+                "player_white": _p("PW"),
+                "player_black": _p("PB"),
+                "result":       _p("RE"),
+                "date":         _p("DT"),
+                "board_size":   game.get_size(),
             })
         except Exception:
             results.append({"filename": path.name, "player_white": "?", "player_black": "?",
