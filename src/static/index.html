@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Game Viewer</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── LEFT PANEL: game list + download ── -->
+    <aside id="sidebar">
+      <h1>Go Game Viewer</h1>
+
+      <section id="download-section">
+        <h2>Download from KGS</h2>
+        <div class="input-row">
+          <input id="kgs-username" type="text" placeholder="KGS username" maxlength="20" />
+          <input id="kgs-max" type="number" value="20" min="1" max="100" style="width:60px" />
+          <button id="btn-download">Download</button>
+        </div>
+        <div id="download-status"></div>
+      </section>
+
+      <section id="game-list-section">
+        <h2>Local Games <button id="btn-refresh" title="Refresh list">↺</button></h2>
+        <ul id="game-list"></ul>
+      </section>
+    </aside>
+
+    <!-- ── CENTER: board ── -->
+    <main id="board-container">
+      <div id="game-info">
+        <span id="info-black"></span>
+        <span id="info-vs"> vs </span>
+        <span id="info-white"></span>
+        <span id="info-result"></span>
+      </div>
+
+      <canvas id="board-canvas"></canvas>
+
+      <div id="controls">
+        <button id="btn-start" title="Go to start">⏮</button>
+        <button id="btn-prev"  title="Previous move (←)">◀</button>
+        <span id="move-counter">Move 0 / 0</span>
+        <button id="btn-next"  title="Next move (→)">▶</button>
+        <button id="btn-end"   title="Go to end">⏭</button>
+        <label style="margin-left:16px">
+          <input type="checkbox" id="chk-coords" checked /> Coords
+        </label>
+      </div>
+
+      <div id="move-list-wrapper">
+        <div id="move-list"></div>
+      </div>
+    </main>
+
+    <!-- ── RIGHT PANEL: analysis ── -->
+    <aside id="analysis-panel">
+      <h2>Live Analysis
+        <span id="katago-badge" class="badge badge-off">KataGo OFF</span>
+      </h2>
+
+      <div id="winrate-section">
+        <div class="wr-labels"><span>Black</span><span>White</span></div>
+        <div id="winrate-bar-wrap">
+          <div id="winrate-bar-black"></div>
+          <div id="winrate-bar-white"></div>
+        </div>
+        <div id="winrate-values"><span id="wr-black">—</span><span id="wr-white">—</span></div>
+        <div id="score-lead"></div>
+      </div>
+
+      <div id="top-moves-section">
+        <h3>Top Moves</h3>
+        <table id="top-moves-table">
+          <thead><tr><th>Move</th><th>Win%</th><th>Score</th><th>Visits</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="analyze-controls">
+        <label>
+          <input type="checkbox" id="chk-auto-analyze" />
+          Auto-analyze every move
+        </label>
+        <button id="btn-analyze">Analyze now</button>
+      </div>
+
+      <div id="analysis-status"></div>
+    </aside>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

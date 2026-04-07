@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+data/games/*.sgf
+data/games/*.zip
+*.egg-info/
+dist/
+build/
+.DS_Store
