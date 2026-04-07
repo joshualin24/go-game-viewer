@@ -3,6 +3,7 @@ FastAPI backend for the Go game viewer.
 """
 
 import os
+import threading
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -22,7 +23,8 @@ STATIC_DIR = Path(__file__).parent / "static"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Path(GAMES_DIR).mkdir(parents=True, exist_ok=True)
-    get_engine()  # warm up KataGo on startup
+    # Warm up KataGo in a background thread so it doesn't block the event loop
+    threading.Thread(target=get_engine, daemon=True).start()
     yield
     get_engine().stop()
 
@@ -86,10 +88,13 @@ class AnalyzeRequest(BaseModel):
 
 
 @app.post("/api/analyze")
-def analyze(req: AnalyzeRequest):
-    """Analyze a position using KataGo."""
+async def analyze(req: AnalyzeRequest):
+    """Analyze a position using KataGo (runs in thread pool to avoid blocking)."""
+    import asyncio
     engine = get_engine()
-    return engine.analyze(req.board_size, req.moves, req.move_index)
+    return await asyncio.get_event_loop().run_in_executor(
+        None, engine.analyze, req.board_size, req.moves, req.move_index
+    )
 
 
 @app.get("/api/katago/status")
